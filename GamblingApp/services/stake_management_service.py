@@ -38,7 +38,7 @@ class StakeManagementService:
 
         return StakeMonitor(initial_amount)
 
-    # 🔁 BET PROCESSING
+    #BET PROCESSING
     def process_bet(self, gambler_id, session_id, bet_amount, is_win):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -78,7 +78,6 @@ class StakeManagementService:
 
         return new_balance
 
-    # 📊 REPORT
     def get_history(self, gambler_id):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -91,3 +90,5 @@ class StakeManagementService:
         conn.close()
 
         return data
+    
+    

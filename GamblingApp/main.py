@@ -57,17 +57,42 @@
 # print(stake_service.process_bet(3, 1, 200, False))  # loss
 
 # print(stake_service.get_history(3))
-from models.stake_monitor import StakeMonitor
+# from models.stake_monitor import StakeMonitor
 
-monitor = StakeMonitor(1000)
+# monitor = StakeMonitor(1000)
 
-monitor.update(1200)
-monitor.update(800)
-monitor.update(1500)
-monitor.update(700)
+# monitor.update(1200)
+# monitor.update(800)
+# monitor.update(1500)
+# monitor.update(700)
 
-print("Current:", monitor.current_stake)
-print("Peak:", monitor.peak)
-print("Lowest:", monitor.lowest)
-print("Volatility:", monitor.volatility())
-print("History:", monitor.history)
+# print("Current:", monitor.current_stake)
+# print("Peak:", monitor.peak)
+# print("Lowest:", monitor.lowest)
+# print("Volatility:", monitor.volatility())
+# print("History:", monitor.history)
+
+
+## USE CASE 3
+from services.betting_service import BettingService
+from strategies.martingale_strategy import MartingaleStrategy
+
+service = BettingService()
+
+service.start_session(1, 3, 1000)
+
+strategy = MartingaleStrategy(50)
+
+bets = service.place_consecutive_bets(
+    session_id=1,
+    gambler_id=3,
+    strategy=strategy,
+    rounds=5,
+    win_probability=0.5
+)
+
+
+for b in bets:
+    print(b.outcome, b.stake_after)
+
+print(service.end_session(1))
