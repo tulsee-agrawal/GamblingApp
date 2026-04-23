@@ -51,12 +51,12 @@
 
 # stake_service = StakeManagementService()
 
-# monitor = stake_service.initialize_stake(session_id=1, gambler_id=3, initial_amount=1000)
+# monitor = stake_service.initialize_stake(session_id=1, gambler_id=1, initial_amount=1000)
 
-# print(stake_service.process_bet(3, 1, 100, True))   # win
-# print(stake_service.process_bet(3, 1, 200, False))  # loss
+# print(stake_service.process_bet(1, 1, 100, True))   # win
+# print(stake_service.process_bet(1, 1, 200, False))  # loss
 
-# print(stake_service.get_history(3))
+# print(stake_service.get_history(1))
 # from models.stake_monitor import StakeMonitor
 
 # monitor = StakeMonitor(1000)
@@ -74,25 +74,55 @@
 
 
 ## USE CASE 3
+# from services.betting_service import BettingService
+# from strategies.martingale_strategy import MartingaleStrategy
+
+# service = BettingService()
+
+# service.start_session(1, 1, 1000)
+
+# strategy = MartingaleStrategy(50)
+
+# bets = service.place_consecutive_bets(
+#     session_id=1,
+#     gambler_id=1,
+#     strategy=strategy,
+#     rounds=5,
+#     win_probability=0.5
+# )
+
+
+# for b in bets:
+#     print(b.outcome, b.stake_after)
+
+# print(service.end_session(1))
+
+## USE CASE 4
+from services.game_session_manager import GameSessionManager
 from services.betting_service import BettingService
-from strategies.martingale_strategy import MartingaleStrategy
+from models.session_parameters import SessionParameters
+from strategies.fixed_strategy import FixedAmountStrategy
 
-service = BettingService()
+manager = GameSessionManager()
+bet_service = BettingService()
 
-service.start_session(1, 3, 1000)
-
-strategy = MartingaleStrategy(50)
-
-bets = service.place_consecutive_bets(
-    session_id=1,
-    gambler_id=3,
-    strategy=strategy,
-    rounds=5,
+# create parameters
+params = SessionParameters(
+    upper_limit=1500,
+    lower_limit=500,
+    min_bet=50,
+    max_bet=200,
+    max_games=5,
     win_probability=0.5
 )
 
+# start session
+session = manager.start_new_session(1, 1, 1000, params)
 
-for b in bets:
-    print(b.outcome, b.stake_after)
+strategy = FixedAmountStrategy(100)
 
-print(service.end_session(1))
+# run session
+summary = manager.continue_session(1, bet_service, strategy)
+
+print("\nFINAL SUMMARY:")
+print(summary)

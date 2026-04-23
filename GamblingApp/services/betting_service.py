@@ -62,7 +62,7 @@ class BettingService:
             bet.is_settled,
             bet.placed_at
         ))
-
+        bet.bet_id = cursor.lastrowid
         conn.commit()
         conn.close()
 

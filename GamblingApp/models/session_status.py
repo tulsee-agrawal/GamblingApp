@@ -1,0 +1,9 @@
+from enum import Enum
+
+class SessionStatus(Enum):
+    INITIALIZED = "INITIALIZED"
+    ACTIVE = "ACTIVE"
+    PAUSED = "PAUSED"
+    ENDED_WIN = "ENDED_WIN"
+    ENDED_LOSS = "ENDED_LOSS"
+    ENDED_MANUAL = "ENDED_MANUAL"
