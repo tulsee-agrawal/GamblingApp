@@ -5,14 +5,10 @@ class GamblerProfileService:
         conn = get_connection()
         cursor = conn.cursor()
 
-    # check if user exists
         cursor.execute("SELECT * FROM gamblers WHERE username=%s", (profile.username,))
         if cursor.fetchone():
             raise Exception("Username already exists")
 
-    # insert normally
-
-        # insert gambler
         cursor.execute("""
             INSERT INTO gamblers
             (username, full_name, email, is_active,
@@ -33,7 +29,6 @@ class GamblerProfileService:
 
         gambler_id = cursor.lastrowid
 
-        # insert preferences
         cursor.execute("""
             INSERT INTO betting_preferences
             (gambler_id, min_bet, max_bet, preferred_game_type,
@@ -57,7 +52,6 @@ class GamblerProfileService:
         conn = get_connection()
         cursor = conn.cursor()
 
-    # ✅ get gambler_id
         cursor.execute("SELECT gambler_id FROM gamblers WHERE username=%s", (username,))
         result = cursor.fetchone()
 
@@ -66,14 +60,12 @@ class GamblerProfileService:
 
         gambler_id = result[0]
 
-    # ✅ update profile
         if profile_data:
             for key, value in profile_data.items():
                 query = f"UPDATE gamblers SET {key}=%s WHERE gambler_id=%s"
                 cursor.execute(query, (value, gambler_id))
                 print(f"Updated gamblers: {key} = {value}")
 
-    # ✅ update preferences
         if pref_data:
             for key, value in pref_data.items():
                 query = f"UPDATE betting_preferences SET {key}=%s WHERE gambler_id=%s"
@@ -83,19 +75,17 @@ class GamblerProfileService:
         conn.commit()
         conn.close()
 
-        print("✅ Update completed")
+        print("Update completed")
     def get_gambler(self, username):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
 
-        # profile
         cursor.execute("SELECT * FROM gamblers WHERE username=%s", (username,))
         gambler = cursor.fetchone()
 
         if not gambler:
             return None
 
-        # preferences
         cursor.execute("SELECT * FROM betting_preferences WHERE gambler_id=%s",
                        (gambler["gambler_id"],))
         prefs = cursor.fetchone()
@@ -133,7 +123,6 @@ class GamblerProfileService:
 
         initial = gambler["initial_stake"]
 
-        # proportional reset
         new_win = initial * 1.5
         new_loss = initial * 0.5
 
