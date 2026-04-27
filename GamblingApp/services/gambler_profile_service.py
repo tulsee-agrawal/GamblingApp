@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from db.connection import get_connection
 
 class GamblerProfileService:
@@ -64,13 +66,13 @@ class GamblerProfileService:
             for key, value in profile_data.items():
                 query = f"UPDATE gamblers SET {key}=%s WHERE gambler_id=%s"
                 cursor.execute(query, (value, gambler_id))
-                print(f"Updated gamblers: {key} = {value}")
+                # print(f"Updated gamblers: {key} = {value}")
 
         if pref_data:
             for key, value in pref_data.items():
                 query = f"UPDATE betting_preferences SET {key}=%s WHERE gambler_id=%s"
                 cursor.execute(query, (value, gambler_id))
-                print(f"Updated preferences: {key} = {value}")
+                # print(f"Updated preferences: {key} = {value}")
 
         conn.commit()
         conn.close()
@@ -100,17 +102,17 @@ class GamblerProfileService:
         data = self.get_gambler(username)
 
         if not data:
-            return False, "Gambler not found"
+            return "Gambler not found"
 
         g = data["profile"]
 
         if g["current_stake"] < g["min_required_stake"]:
-            return False, "Below minimum stake"
+            return "Below minimum stake"
 
         if not g["is_active"]:
-            return False, "Account inactive"
+            return "Account inactive"
 
-        return True, "Eligible"
+        return "Eligible"
     def reset_profile(self, username):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -122,9 +124,9 @@ class GamblerProfileService:
             raise Exception("Gambler not found")
 
         initial = gambler["initial_stake"]
-
-        new_win = initial * 1.5
-        new_loss = initial * 0.5
+       
+        new_win = initial * Decimal("1.5")
+        new_loss = initial * Decimal("0.5")
 
         cursor.execute("""
             UPDATE gamblers

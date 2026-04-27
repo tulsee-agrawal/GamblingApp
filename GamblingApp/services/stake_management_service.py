@@ -11,14 +11,12 @@ class StakeManagementService:
         conn = get_connection()
         cursor = conn.cursor()
 
-        # update gambler current stake
         cursor.execute("""
             UPDATE gamblers
             SET current_stake=%s
             WHERE gambler_id=%s
         """, (initial_amount, gambler_id))
 
-        # record transaction
         cursor.execute("""
             INSERT INTO stake_transactions
             (session_id, gambler_id, transaction_type, amount,
@@ -38,7 +36,6 @@ class StakeManagementService:
 
         return StakeMonitor(initial_amount)
 
-    #BET PROCESSING
     def process_bet(self, gambler_id, session_id, bet_amount, is_win):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -53,12 +50,10 @@ class StakeManagementService:
 
         new_balance = current + bet_amount if is_win else current - bet_amount
 
-        # update stake
         cursor.execute("""
             UPDATE gamblers SET current_stake=%s WHERE gambler_id=%s
         """, (new_balance, gambler_id))
 
-        # record transaction
         cursor.execute("""
             INSERT INTO stake_transactions
             (session_id, gambler_id, transaction_type, amount,

@@ -8,26 +8,21 @@ from models.pause_record import PauseRecord
 
 
 class GamingSession:
+    
 
     def __init__(self, session_id, gambler_id, initial_stake, params):
         self.session_id = session_id
         self.gambler_id = gambler_id
-
         self.initial_stake = initial_stake
         self.current_stake = initial_stake
-
         self.params = params
-
         self.status = SessionStatus.INITIALIZED
         self.end_reason = None
-
         self.games = []
         self.pauses = []
         self.current_pause = None
-
         self.win_streak = 0
         self.loss_streak = 0
-
         self.started_at = None
         self.ended_at = None
 
